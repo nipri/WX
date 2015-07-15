@@ -179,11 +179,13 @@ inline void getTempPress(void) {
 			
 	memset(tx_buf2, 0, 128);
 			
-	//sprintf( (char *)tx_buf2, "Squat: %d	Squat1: %d\r\n", RTC.CTRL, RTC.CNTL);
-	sprintf( (char *)tx_buf2, "Time: %2d:%2d:%2d	", datetime.hours, datetime.minutes, datetime.seconds);
+	sprintf( (char *)tx_buf2, "Time: %d:%d:%d	", datetime.hours, datetime.minutes, datetime.seconds);
 	sendUARTdata(tx_buf2, sizeof(tx_buf2));
+	
+	// Pressure data is returned in Pa
+	// 1 inHg = 3386.38866667 Pa
 			
-	sprintf( (char *)tx_buf2, "Time: %lu	Pressure: %.2f in Hg	Temperature: %.1f C\r\n", temp_data.timestamp, (  ( (double)press_data.pressure.value / 100) / 33.864  ), (double)temp_data.temperature.value / 10 );
+	sprintf( (char *)tx_buf2, "Pressure: %.2f in Hg	Temperature: %.1f C\r\n", (double)press_data.pressure.value / 3386.4, (double)temp_data.temperature.value / 10 );
 	sendUARTdata(tx_buf2, sizeof(tx_buf2));
 			
 }
@@ -191,22 +193,14 @@ inline void getTempPress(void) {
 int main(void)
 {
 
-//	uint8_t received_byte;
-//	uint32_t id;
-//	uint8_t ver;
-//	sensor_t barometer;
-//	sensor_data_t press_data;
-//	sensor_data_t temp_data;
 
 	/* Initialize the board.
 	 * The board-specific conf_board.h file contains the configuration of
 	 * the board initialization.
 	 */
-//	cli();
 	board_init();
 	pmic_init();
 	sysclk_init();
-//	sleepmgr_init();
 	sensor_platform_init();
 	rtc_init();
 	PORTE.DIRSET = 0x01;
@@ -260,26 +254,9 @@ int main(void)
 		sendUARTdata(tx_buf2, sizeof(tx_buf2));				
 	}
 	
-//	cpu_irq_enable();
 	sei();
 	
 	while (true) {
-		
-//		_delay_ms(1000);
-		
-//		time = rtc_get_time();
-		
-//		sensor_get_pressure(&barometer, &press_data);
-//		sensor_get_temperature(&barometer, &temp_data);
-		
-//		memset(tx_buf2, 0, 128);
-		
-//		sprintf( (char *)tx_buf2, "Squat: %d	Squat1: %d\r\n", RTC.CTRL, RTC.CNTL);
-//		sprintf( (char *)tx_buf2, "Time: %2d:%2d:%2d	", datetime.hours, datetime.minutes, datetime.seconds);
-//		sendUARTdata(tx_buf2, sizeof(tx_buf2));
-			
-//		sprintf( (char *)tx_buf2, "Pressure: %.2f in Hg	Temperature: %.1f C\r\n", (  ( (double)press_data.pressure.value / 100) / 33.864  ), (double)temp_data.temperature.value / 10 );
-//		sendUARTdata(tx_buf2, sizeof(tx_buf2));	
 		
 	}	
 }
